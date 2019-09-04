@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<link rel="stylesheet" href="./index.css">
+</head>
+<body>
+	<div class="app">
+		<div class="cont">
+			<template v-for="i in 12">
+				<div class="number" 
+				v-for="(item,index) in list" 
+				:class="item == '' ? 'pop': 'zhen'"
+				ref="nub">
+					{{ item }}
+					<template v-if="item !== ''">
+						{{ i - 1 }}
+					</template>
+				</div>
+			</template>
+		</div>
+		<div ref="houre" class="houre"></div>
+		<div ref="minute" class="minute"></div>
+		<div ref="second" class="second"></div>
+	</div>
+	<script>		
+		const vm = new Vue({
+			el:'.app',
+			data() {
+				return {
+					list:["|","","","",""],
+					houre:null,
+					miniute:null,
+					second:null
+				}
+			},
+			mounted() {
+				this.initstyle();
+				this.initDate()
+				setInterval( _ => {
+					this.initDate();
+					this.$refs.second.style = `transform: rotate(${this.second*6}deg)`
+
+				},1000)
+				setInterval(_ => {
+					this.initDate();
+					this.$refs.houre.style = `transform: rotate(${this.houre * 30}deg)`
+
+				}, 1000*60)
+				setInterval(_ => {
+					this.initDate();
+					this.$refs.minute.style = `transform: rotate(${this.minute * 6}deg)`
+
+				}, 1000*120)
+				this.init()
+			},
+			methods: {
+				initDate(){
+					const date = new Date();
+					this.houre = date.getHours();
+					this.miniute = date.getMinutes();
+					this.second = date.getSeconds();
+				},
+				init(){
+					this.$refs.minute.style = `transform: rotate(${this.miniute * 6 + 180}deg)`
+					this.$refs.houre.style = `transform: rotate(${this.houre * 30 + 180}deg)`
+				},
+				initstyle(){
+					this.$refs.nub.forEach( (ele,index) => {
+						ele.style = `transform: rotate(${index*6}deg)`
+					})
+				}
+			},
+		})
+	</script>
+</body>
+</html>
