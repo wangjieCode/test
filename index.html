@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+	<style>
+		label {
+			position: relative;
+		}
+
+		#fileinp {
+			position: absolute;
+			left: 0;
+			top: 0;
+			opacity: 0;
+		}
+
+		#btn {
+			margin-right: 5px;
+		}
+
+		#text {
+			color: red;
+		}
+	</style>
+</head>
+
+<body>
+	<label for="fileinp">
+		<input type="button" id="btn" value="点我上传"><span id="text">请上传Word文档</span>
+		<input type="file" id="fileinp">
+	</label>
+</body>
+
+</html>
