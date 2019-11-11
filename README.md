@@ -1,89 +1,64 @@
-# 靠谱工程师
+# 移动端事件
 
-### 进程和线程的区别，协程呢
-1. 进程是一个资源的容器，为进程提供共享资源，是对程序的一种静态描述
-2. 线程是计算机最小调度和运行的单位，是对程序的动态描述
+## 基础事件
 
-### TCP,UDP区别
-1. 基于连接与无连接
-2. 对系统资源的要求(TCP较多，UDP较少)
-3. UDP程序结构简单
-4. 流模式和数据报模式
-5. TCP保证数据的正确性，UDP可能会丢包
-6. TCP保证数据顺序, UDP不保证
+touchstart		手指按下事件，类似mousedown
+touchmove		手指移动事件，类似mousemove
+touchend		手指抬起事件，类似mouseup
 
-### osi 七层模型和tcp/ip四层模型
-物理层，数据链路层，网络层，传输层，表示层，应用层
-物理层，数据层，网络层，应用层
+> 移动端事件最好用事件监听函数来添加，不要用on添加
 
-### jsonp跨域
-跨域: 浏览器的同源策略限制，域名，端口，协议必须相同
-jsonp是给请求处理时传入一个回调函数，后端将返回的结果以函数参数的形式返回回来
+### 和pc端区别
 
-### http2
-多路复用，长连接
+1. 触发点
+- pc端
+		mousemove	不需要鼠标按下，但是必需在元素上才能触发
+		mouseup		必需在元素上抬起才能触发 
+-	移动端
+		touchmove	必需手指按下才能触发，但是，按下后不在元素上也能触发
+		touchend	不需要在元素上抬起就能触发
+2. 触发顺序
+	touchstart ==> touchend ==>  mousedown ==> click ==> mouseup
+	（pc的事件在移动端里会有延迟 **兼容未适配移动端双击放大查看** ，300ms左右）
+3. touchstart与click的区别
+	touchstart为手指碰到元素就触发，click为手指碰到元素并且抬起才会触发
 
-### http3用udp协议的好处
-丢包会需要确认，浪费至少一个ttfb
+4. 移动端事件的问题：
+- 事件点透
+	出现场景：有两层重叠的元素，上面的元素有touch事件（点击后要消失），下面是一个默认会触发click事件的元素（a. 表单元素. 带click事件的元素）
+- 解决方案：
+	1. 下层的元素不要用能点击的标签，并且不要给它们添加事件
+	2. 把上面的元素的事件换成click事件
+	3. 取消事件的默认动作
 
-丢包不影响后续的数据传输
+5. 取消事件默认动作的作用
+	1. touchmove
+		1. 阻止了浏览器的滚动条
+		2. 阻止了用户双指缩放
+	2. touchstart
+		1. 解决ios10+及部分安卓机通过设置viewport禁止用户缩放的功能（双指滑动. 双击）
+		2. 解决事件点透问题
+		3. 阻止图片文字被选中
+		4. 阻止了长按元素会弹出系统菜单
+		5. 阻止了浏览器回弹的效果
+		6. 阻止了浏览器的滚动条
+		7. 阻止了鼠标的事件
+		8. 阻止了input框的输入功能
 
-### http缓存头
-Cache-Control：
+### 事件对象常用属性
+- touches			位于当前屏幕上的所有手指列表（必需至少有1个手指在添加触发事件的元素上）
+- targetTouches	位于当前DOM元素上的手指列表
+- changedTouches	触发当前事件的手指列表
 
-区别
-Last-Madified
-Etag
+## 滑屏实现
 
-## 区别defer async
-defer相当于普通的script标签放到最后引入
-acync异步请求，请求回来立即执行
+> 使用translate避免重绘，重流。提升性能**移动端对c3的支持度较高**
 
-### xxs csrf攻击原理 
+原理
 
-### loadmore js实现
+* 按下的坐标
+* 移动的坐标
+* 两坐标的差
+* 元素按下的距离，移动后距离
 
-### 模块化发展
-1. js没有模块化方案
-2. nodejs出现commonjs
-2. amd，cmd
-3. ES6
-4. ES7异步导入
-
-### [] == (![])
-
-### Property Attribute区别
-对象的原型：获取的是引用的对象
-标签的属性：获取来的是字符串
-
-### reverse
-字符串反转，考虑表情图标(unicode,每个字符的长度>=2)，不能使用split截取来拆分数组
-正解：使用Array.from转化为数组
-
-### for forEach for..in for..of区别
-
-for: 性能最好，遍历数组要先保存长度，
-> for(let i = arr.length; i >= 0; i --){}
-forEach: Array原型的方法，传入处理函数，
-for...in: 遍历对象，
-for...of: 遍历有部署迭代接口(数组，集合)，**对象默认没有迭代接口**
-- 给对象添加迭代接口实现for...of遍历
-```javascript
-Object.prototype[Symbol.iterator] = function* () {
-	for (const [ key, value ] of Object.entries(this)) {
-		yield {key, value} 
-	}
-}
-```
-
-### 对象深拷贝(考虑set，map，循环引用)
-
-### debounce throttle
-
-### 异步相关  ==> node和浏览器的区别
-await和then
-宏任务
-微任务
-微任务是引擎队列维护，宏任务是浏览器维护
-
-## 洋葱模型
+## 移动端轮播图
