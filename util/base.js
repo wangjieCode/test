@@ -1,0 +1,1 @@
+export const type = o => Object.prototype.toString.call(o).match(/\[object (.*)]/)[1].toLowerCase();
